@@ -1,0 +1,55 @@
+###############################################################################
+#                          Piper base dev         v.1.0                   #
+#                          nginx PHP 7.1 Mysql 5.7                        #
+###############################################################################
+version: "3"
+services:
+
+  mysqlserver:
+      image: mysql:5.7
+      container_name: jlin-mysql57
+      working_dir: /approot
+      volumes:
+        - ./approot:/approot
+        - ./db_data/mysql:/var/lib/mysql
+        - ./config/mysql:/etc/mysql/conf.d
+    
+      restart: always
+      env_file:
+           "dockerfile/mysql/db.env"
+      environment:
+            - MYSQL_DATABASE=${MYSQL_DATABASE}
+            - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+            - MYSQL_USER=${MYSQL_USER}
+            - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      ports:
+      - "3306:3306"
+ 
+  webserver:
+      image: nginx:alpine
+      container_name: jlin-nginx
+      working_dir: /approot
+      volumes:
+          - ./approot:/approot
+          - ./config/nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+      ports:
+       - "5978:80"
+      links:
+       - php-fpm   
+
+  php-fpm:
+      image: iamjlintw/jlindocker-php7:latest
+      container_name: jlin-php-fpm
+      working_dir: /approot
+      volumes:
+        - ./approot:/approot
+        - ./config/php/php-fpm.d:/etc/php7/php-fpm.d
+        - ./config/php/conf.d:/etc/php7/conf.d
+        - ./config/php/php.ini:/etc/php7/php.ini
+        - ./config/php/php-fpm.conf:/etc/php7/php-fpm.conf       
+      restart: always
+   
+      ports:
+      - "9000:9000"
+        
+
