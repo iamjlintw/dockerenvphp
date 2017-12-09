@@ -1,1 +1,1 @@
-include dockerfile/mysql/db.env
+include db.env

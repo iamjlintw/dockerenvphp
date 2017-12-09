@@ -6,46 +6,56 @@ version: "3"
 services:
 
   mysqlserver:
-      image: mysql:5.7
-      build: .
+      image: mysql:5.7 
       container_name: jlin-mysql57
       working_dir: /approot
       volumes:
         - ./approot:/approot
         - ./db_data/mysql:/var/lib/mysql
         - ./config/mysql:/etc/mysql/conf.d
-    
+      environment:
+        - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+        - MYSQL_DATABASE=${MYSQL_DATABASE}
+        - MYSQL_USER=${MYSQL_USER}
+        - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+   
       restart: always
       env_file:
-           "dockerfile/mysql/db.env"
+           ".env"
       ports:
       - "3306:3306"
+    
  
   webserver:
       image: nginx:alpine
       container_name: jlin-nginx
       working_dir: /approot
       volumes:
-          - ./approot:/approot
-          - ./config/nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+          - ./approot:/approot 
+          - ./config/nginx/default.conf:/etc/nginx/conf.d/default.conf 
       ports:
-       - "5978:80"
-      links:
-       - php-fpm   
+      - "5978:80"
+       
 
   php-fpm:
       image: iamjlintw/jlindocker-php7:latest
       container_name: jlin-php-fpm
       working_dir: /approot
+      
       volumes:
         - ./approot:/approot
         - ./config/php/php-fpm.d:/etc/php7/php-fpm.d
         - ./config/php/conf.d:/etc/php7/conf.d
-        - ./config/php/php.ini:/etc/php7/php.ini
-        - ./config/php/php-fpm.conf:/etc/php7/php-fpm.conf       
+        #if you want setup setting in these path ,remove mark 
+        #- ./config/php/php.ini:/etc/php7/php.ini
+        #- ./config/php/php-fpm.conf:/etc/php7/php-fpm.conf       
       restart: always
-   
+      depends_on:
+      - webserver
+      - mysqlserver
       ports:
       - "9000:9000"
-        
+      
+
+  
 
