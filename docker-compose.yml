@@ -1,67 +1,51 @@
-###############################################################################
-#                          Piper base dev         v.1.0                   #
-#                          nginx PHP 7.1 Mysql 5.7                        #
-###############################################################################
-version: "3"
+version: '3'
 services:
-
-  mysqlserver:
-      image: mysql:5.7 
-      container_name: jlin-mysql57
-      working_dir: /approot
-      volumes:
-        - ./approot:/approot
-        - ./db_data/mysql:/var/lib/mysql
-        - ./config/mysql:/etc/mysql/conf.d
-      environment:
-        - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-        - MYSQL_DATABASE=${MYSQL_DATABASE}
-        - MYSQL_USER=${MYSQL_USER}
-        - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-   
-      restart: always
-      env_file:
-           ".env"
-      ports:
-      - "3306:3306"
-    
- 
   webserver:
-      image: nginx:latest
-      container_name: jlin-nginx
-      working_dir: /approot
-      volumes:
-          - ./approot:/approot 
-          - ./config/nginx/default.conf:/etc/nginx/conf.d/default.conf
-      ports:
-      - "5978:80"
-      networks:
-            - dev-network      
-
+    image: 'nginx:alpine'
+    container_name: jlin-nginx
+    working_dir: /approot
+    volumes:
+      - './approot:/approot'
+      - ./config/nginx/conf.d:/etc/nginx/conf.d/:ro
+      - ./config/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./log/nginx/:/var/log/nginx/:rw
+    ports:
+      - '5978:80'
+    links:
+      - php-fpm
+    networks:
+      - dev-network
   php-fpm:
-      image: iamjlintw/jlindocker-php7:latest
-      container_name: jlin-php-fpm
-      working_dir: /approot
-      
-      volumes:
-        - ./approot:/approot
-        - ./config/php/php-fpm.d:/etc/php7/php-fpm.d
-        - ./config/php/conf.d:/etc/php7/conf.d
-        #if you want setup setting in these path ,remove mark 
-        #- ./config/php/php.ini:/etc/php7/php.ini
-        #- ./config/php/php-fpm.conf:/etc/php7/php-fpm.conf       
-      restart: always
-
-      depends_on:
-      - webserver
+    build: ./build/php72/
+    working_dir: /approot
+    volumes:
+      - './approot:/approot'
+      - ./config/php/php.ini:/usr/local/etc/php/php.ini:ro
+      - ./config/php/php-fpm.d/www.conf:/usr/local/etc/php-fpm.d/www.conf:rw
+      - ./log/php-fpm/:/var/log/php-fpm/:rw
+    links:
       - mysqlserver
-      ports:
-      - "9000:9000"
-      tty: true 
-      networks:
-            - dev-network
-
-  
+    ports:
+      - '9000:9000'
+    networks:
+      - dev-network
+  mysqlserver:
+    image: 'mysql:5.7'
+    container_name: jlin-mysql57
+    working_dir: /approot
+    volumes:
+      - './approot:/approot'
+      - './db_data/mysql:/var/lib/mysql'
+      - './config/mysql:/etc/mysql/conf.d'
+    environment:
+      - 'MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}'
+      - 'MYSQL_DATABASE=${MYSQL_DATABASE}'
+      - 'MYSQL_USER=${MYSQL_USER}'
+      - 'MYSQL_PASSWORD=${MYSQL_PASSWORD}'
+    restart: always
+    env_file: .env
+    ports:
+      - '3306:3306'
 networks:
-    dev-network:
-        driver: bridge
+  dev-network:
+    driver: bridge
