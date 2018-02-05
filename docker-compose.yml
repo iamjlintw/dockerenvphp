@@ -10,7 +10,7 @@ services:
       - ./config/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./log/nginx/:/var/log/nginx/:rw
     ports:
-      - '5978:80'
+      - '80:80'
     links:
       - php-fpm
     networks:
