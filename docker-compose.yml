@@ -16,7 +16,7 @@ services:
     networks:
       - dev-network
   php-fpm:
-    build: ./build/php72/
+    build: ./build/php70/
     working_dir: /approot
     volumes:
       - './approot:/approot'
