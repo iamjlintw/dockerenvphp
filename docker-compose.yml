@@ -2,7 +2,7 @@ version: '3'
 services:
   webserver:
     image: 'nginx:alpine'
-    container_name: jlin-nginx
+    container_name: nginx
     working_dir: /approot
     volumes:
       - './approot:/approot'
@@ -17,6 +17,7 @@ services:
       - dev-network
   php-fpm:
     build: ./build/php70/
+    container_name: php-fpm70
     working_dir: /approot
     volumes:
       - './approot:/approot'
