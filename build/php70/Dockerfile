@@ -1,6 +1,9 @@
 FROM php:7.0-fpm
-RUN groupadd -g 3000  app
-RUN useradd  -g  app app 
+ARG DEV_GID
+ARG DEV_UID
+RUN echo "Build number: $DEV_GID $DEV_UID"
+RUN groupadd -g $DEV_GID  app
+RUN useradd  -g  app -u $DEV_UID app 
 RUN apt-get update && apt-get install -y \
         libfreetype6-dev \
         libjpeg62-turbo-dev \

@@ -1,7 +1,11 @@
 version: '3'
 services:
   webserver:
-    build: ./build/nginx/
+    build:
+      context: ./build/nginx/
+      args:
+        - 'DEV_GID=${DEV_GID}'
+        - 'DEV_UID=${DEV_UID}'
     container_name: nginx
     working_dir: /approot
     volumes:
@@ -16,7 +20,11 @@ services:
     networks:
       - dev-network
   php-fpm:
-    build: ./build/php70/
+    build: 
+      context: ./build/php70/
+      args:
+        - 'DEV_GID=${DEV_GID}'
+        - 'DEV_UID=${DEV_UID}'
     container_name: php-fpm70
     working_dir: /approot
     volumes:
@@ -42,7 +50,7 @@ services:
       - 'MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}'
       - 'MYSQL_DATABASE=${MYSQL_DATABASE}'
       - 'MYSQL_USER=${MYSQL_USER}'
-      - 'MYSQL_PASSWORD=${MYSQL_PASSWORD}'
+      - 'MYSQL_PASSWORD=${MYSQL_PASSWORD}' 
     restart: always
     env_file: .env
     ports:
