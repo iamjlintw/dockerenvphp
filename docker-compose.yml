@@ -21,7 +21,7 @@ services:
       - dev-network
   php-fpm:
     build: 
-      context: ./build/php70/
+      context: ./build/php71/
       args:
         - 'DEV_GID=${DEV_GID}'
         - 'DEV_UID=${DEV_UID}'
