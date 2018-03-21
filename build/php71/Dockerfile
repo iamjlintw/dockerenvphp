@@ -4,9 +4,10 @@ ARG DEV_UID
 ENV TZ=Asia/Taipei
 RUN echo "Build number: $DEV_GID $DEV_UID"
 RUN groupadd -g $DEV_GID  app
-RUN useradd  -g  app -u $DEV_UID app 
-RUN usermod -d /home/app app
-RUN usermod -s /bin/bash app
+#RUN useradd  -g  app -u $DEV_UID app 
+RUN useradd -r -m -p '*' -d /home/app -s /bin/bash -u $DEV_UID -g app app
+#RUN usermod -d /home/app app
+#RUN usermod -s /bin/bash app
 RUN apt-get update \
   && apt-get install -y --no-install-recommends \
     curl \
