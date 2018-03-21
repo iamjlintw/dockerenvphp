@@ -2,6 +2,7 @@ FROM php:7.1-fpm
 ARG DEV_GID
 ARG DEV_UID
 RUN echo "Build number: $DEV_GID $DEV_UID"
+RUN apk update && apk upgrade && apk add bash git
 RUN groupadd -g $DEV_GID  app
 RUN useradd  -g  app -u $DEV_UID app 
 RUN usermod -d /home/app app
@@ -17,7 +18,7 @@ RUN apt-get update \
     libfreetype6-dev \
     libssl-dev \
     libmcrypt-dev \
-    git-all \
+    imagemagick \
   && rm -rf /var/lib/apt/lists/*
  RUN docker-php-ext-install mcrypt \
   # Install the PHP pdo_mysql extention
@@ -38,4 +39,7 @@ RUN apt-get update \
     RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer
     RUN chmod +rx /usr/bin/composer
 
+    # Install Node.js
+    RUN curl -sL https://deb.nodesource.com/setup | bash - && \
+    apt-get install -y nodejs
     

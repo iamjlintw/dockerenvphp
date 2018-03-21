@@ -25,7 +25,7 @@ services:
       args:
         - 'DEV_GID=${DEV_GID}'
         - 'DEV_UID=${DEV_UID}'
-    container_name: php-fpm70
+    container_name: php-fpm71
     working_dir: /approot
     volumes:
       - './approot:/approot/:rw'
@@ -40,7 +40,7 @@ services:
       - dev-network
   mysqlserver:
     image: 'mysql:5.7'
-    container_name: jlin-mysql57
+    container_name: mysql57
     working_dir: /approot
     volumes:
       - './approot:/approot'
