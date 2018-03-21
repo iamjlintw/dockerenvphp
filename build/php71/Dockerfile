@@ -4,6 +4,8 @@ ARG DEV_UID
 RUN echo "Build number: $DEV_GID $DEV_UID"
 RUN groupadd -g $DEV_GID  app
 RUN useradd  -g  app -u $DEV_UID app 
+RUN usermod -d /home/app app
+RUN usermod -s /bin/bash app
 RUN apt-get update \
   && apt-get install -y --no-install-recommends \
     curl \
@@ -15,6 +17,7 @@ RUN apt-get update \
     libfreetype6-dev \
     libssl-dev \
     libmcrypt-dev \
+    git-all \
   && rm -rf /var/lib/apt/lists/*
  RUN docker-php-ext-install mcrypt \
   # Install the PHP pdo_mysql extention
