@@ -1,8 +1,8 @@
 FROM php:7.1-fpm
 ARG DEV_GID
 ARG DEV_UID
+ENV TZ=Asia/Taipei
 RUN echo "Build number: $DEV_GID $DEV_UID"
-RUN apk update && apk upgrade && apk add bash git
 RUN groupadd -g $DEV_GID  app
 RUN useradd  -g  app -u $DEV_UID app 
 RUN usermod -d /home/app app
