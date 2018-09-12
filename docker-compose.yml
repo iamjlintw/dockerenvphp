@@ -1,4 +1,4 @@
-version: '3'
+version: '2'
 services:
   webserver:
     build:
@@ -9,7 +9,7 @@ services:
     container_name: nginx
     working_dir: /approot
     volumes:
-      - './approot:/approot/:rw'
+      - '../workspace:/approot/:rw'
       - ./config/nginx/conf.d:/etc/nginx/conf.d/:ro
       - ./config/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./log/nginx/:/var/log/nginx/:rw
@@ -28,7 +28,7 @@ services:
     container_name: php-fpm71
     working_dir: /approot
     volumes:
-      - './approot:/approot/:rw'
+      - '../workspace:/approot/:rw'
       - ./config/php/php.ini:/usr/local/etc/php/php.ini:ro
       - ./config/php/php-fpm.d/www.conf:/usr/local/etc/php-fpm.d/www.conf:rw
       - ./log/php-fpm/:/var/log/php-fpm/:rw
@@ -43,8 +43,8 @@ services:
     container_name: mysql57
     working_dir: /approot
     volumes:
-      - './approot:/approot'
-      - './db_data/mysql:/var/lib/mysql'
+      - '../workspace:/approot'
+      - '../db_data/mysql:/var/lib/mysql'
       - './config/mysql:/etc/mysql/conf.d'
     environment:
       - 'MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}'

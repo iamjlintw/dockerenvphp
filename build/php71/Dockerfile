@@ -18,7 +18,7 @@ RUN apt-get update \
     libmcrypt-dev \
     zip \ 
     unzip \
-    zlib-dev \
+    zlib1g-dev \
     imagemagick \
   && rm -rf /var/lib/apt/lists/*
  RUN docker-php-ext-install mcrypt \
